@@ -17,3 +17,10 @@
   `scored` results.
 - **Trade-off:** Consumers must handle status fields, but unsupported facets
   cannot silently become a fabricated numeric result.
+
+## D3 — Deterministic taxonomy rules over unrestricted LLM labeling
+
+- **Problem:** Facet classification (e.g., observability, sensitivity) needs to scale to thousands of heterogeneous records consistently, without hallucinating medical observability.
+- **Options considered:** Use a zero-shot LLM prompt to dynamically assign categories and observability; or build a transparent, rule-based keyword mapping system with deterministic outputs and an explicit override list.
+- **Choice:** Use a transparent, version-controlled rule engine based on regex keyword sets and an editable override CSV file.
+- **Trade-off:** Manual rules require upfront effort to curate and maintain, and leave many edge cases classified as "uncertain". However, this ensures that high-risk medical or religious facets are never accidentally classified as "conversationally observable" due to LLM stochasticity.

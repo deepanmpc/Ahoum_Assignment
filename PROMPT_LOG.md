@@ -66,3 +66,11 @@ model-observed corrections.
 - **Used:** Python `csv` module, regex heuristics for normalization and string quality checks. Implemented MD5-based stable ID generation leveraging row index and raw values. Added tests covering all string mutation and preservation constraints.
 - **Deliberately not implemented:** No API calls or LLM usage for categorization. Placeholders were used for observable and classification labels.
 - **Verification command:** `.venv/bin/python -m pytest tests/test_preprocessing.py` and `.venv/bin/python scripts/preprocess_facets.py`
+
+## 2026-08-25 — Phase B3 Taxonomy and Observability Logic (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Extend the deterministic preprocessing pipeline to include a controlled taxonomy, observability policy, and sensitivity policy using a rule-based system instead of an LLM.
+- **Used:** Python regex mapping rules (`src/ahoum_assignment/taxonomy_rules.py`) with support for an editable `facet_overrides.csv`. Added test cases for medical, biographical, and religious facets. Accumulated classification statistics and updated `facet_audit.md`.
+- **Deliberately not implemented:** Did not use an LLM for classification. Remaining facets that did not match strict rules were deterministically marked as "uncertain".
+- **Verification command:** `.venv/bin/python scripts/preprocess_facets.py` and `.venv/bin/python -m pytest tests/`
