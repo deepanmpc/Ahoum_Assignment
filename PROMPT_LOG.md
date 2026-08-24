@@ -34,3 +34,11 @@ model-observed corrections.
 - **Used:** `pydantic` for `FacetRecord` and `FacetScore` to provide robust validation. Updated `.gitignore`, `.env.example`, and directory structure per requirements.
 - **Deliberately not implemented:** Facet classification, embeddings, LLM calls, provider SDKs, benchmarks, and fake output data.
 - **Verification command:** `python -m pytest tests/`
+
+## 2026-08-24 — Phase A2 (Re-execution)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Add central configuration for the future pipeline and a local diagnostic command, explicitly avoiding network calls or unimplemented features.
+- **Used:** `.toml` config parsing using Python 3.11+ `tomllib`, dataclasses for schema `AppConfig`. Added `pytest` coverage for configuration overrides. 
+- **Deliberately not implemented:** No provider integrations, embeddings, retrieval logic, scoring, API requests, or API key parsing.
+- **Verification command:** `.venv/bin/python scripts/doctor.py doctor` and `.venv/bin/python -m pytest tests/test_config.py`

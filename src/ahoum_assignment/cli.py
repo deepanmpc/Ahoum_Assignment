@@ -21,7 +21,7 @@ def doctor(config_path: Path) -> int:
     print("Configuration is valid.")
     print(f"Model provider: {config.model_provider}")
     print(f"Model name: {config.model_name}")
-    print("No model or network call was made.")
+    print("No model or network call was made. This command will never contact Ollama or cloud providers.")
     return 0
 
 

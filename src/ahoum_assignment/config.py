@@ -22,7 +22,10 @@ class AppConfig:
     model_timeout_seconds: int
     model_max_retries: int
     retrieval_top_k: int
+    retrieval_semantic_weight: float
+    retrieval_keyword_weight: float
     scoring_batch_size: int
+    scoring_minimum_confidence: float
 
 
 def load_config(config_path: Path | str = "config.toml") -> AppConfig:
@@ -50,5 +53,8 @@ def load_config(config_path: Path | str = "config.toml") -> AppConfig:
         model_timeout_seconds=int(model["timeout_seconds"]),
         model_max_retries=int(model["max_retries"]),
         retrieval_top_k=int(retrieval["top_k"]),
+        retrieval_semantic_weight=float(retrieval["semantic_weight"]),
+        retrieval_keyword_weight=float(retrieval["keyword_weight"]),
         scoring_batch_size=int(scoring["batch_size"]),
+        scoring_minimum_confidence=float(scoring["minimum_confidence"]),
     )

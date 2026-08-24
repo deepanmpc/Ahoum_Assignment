@@ -5,10 +5,14 @@ heterogeneous facet catalogue.
 
 ## Current status
 
-Phase A is complete: repository structure, stable result contracts,
-configuration, a no-network diagnostic command, and tests are in place.
-Preprocessing, retrieval, model scoring, and evaluation are implemented in
-subsequent phases.
+Phase A is complete: repository structure, stable result contracts, configuration, a no-network diagnostic command, and tests are in place.
+
+Phase A does not yet implement:
+- preprocessing
+- embeddings
+- retrieval
+- LLM scoring
+- benchmark evaluation
 
 ## Architecture target
 
