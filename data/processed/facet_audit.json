@@ -1,0 +1,33 @@
+{
+  "row_count": 399,
+  "non_empty_row_count": 399,
+  "exact_duplicate_count": 0,
+  "normalized_duplicate_candidates": {},
+  "punctuation_problems_examples": [
+    "HonestyHumility:",
+    "SelfEsteem",
+    "SelfDirectedness"
+  ],
+  "numbering_prefixes_examples": [
+    "800. Sufi practice: Sufi retreat attendance count",
+    "644. Spiritual virtue: Humility practice index",
+    "754. I Ching hexagram 36 resonance level",
+    "596. Religious practice: Quran khatam cycles per year",
+    "926. Bah\u00e1\u2019\u00ed spiritual metric: Ridv\u00e1n festival participation"
+  ],
+  "trailing_colon_artifacts_examples": [
+    "Democratic Leadership:",
+    "HonestyHumility:",
+    "Relationship Building Themes:",
+    "Numerical Reasoning Subcomponents:",
+    "Affiliation Motivation:"
+  ],
+  "malformed_examples": [
+    "FSH level",
+    "Anatomy knowledge",
+    "Eco-tourism trips",
+    "Pilgrimage participation count",
+    "Training-cycle length",
+    "Comparing alphanumeric data"
+  ]
+}

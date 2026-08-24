@@ -50,3 +50,11 @@ model-observed corrections.
 - **Used:** `git check-ignore`, `pytest`, `scripts/doctor.py`.
 - **What was changed:** Updated `DECISIONS.md` to truthfully reflect the choice of `pydantic` over standard library `dataclasses`.
 - **Verification:** All checklists passed cleanly.
+
+## 2026-08-24 — Phase B1 Data Audit & Schema Definition (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Inspect raw CSV data without changing it, produce a reproducible audit, and define the enriched catalogue schema based on strict observational constraints.
+- **Used:** Python scripting to run heuristics on the raw CSV. Discovered 399 total valid lines with numbering prefixes, trailing colons, CamelCase anomalies, and domain-specific facets (e.g., "FSH level", "Pilgrimage participation count"). Drafted schema in `docs/facet_catalogue_schema.md`.
+- **Deliberately not implemented:** Did not manually label the 399 facets or generate the final `.csv`. The prompt strictly requested evidence and schema definitions only.
+- **Verification command:** Checked outputs in `data/processed/facet_audit.json`, `data/processed/facet_audit.md`, and `docs/facet_catalogue_schema.md`.
