@@ -65,3 +65,76 @@ class FacetScore(BaseModel):
             if self.score_1_to_5 is not None:
                 raise ValueError(f"Status '{self.status.value}' cannot have a numeric score")
         return self
+
+class ConversationInput(BaseModel):
+    conversation_id: str
+    text: str
+    metadata: Dict[str, Any] = Field(default_factory=dict)
+    language_hint: Optional[str] = None
+
+
+class RetrievalCandidate(BaseModel):
+    facet_id: str
+    facet_raw: str
+    facet_normalized: str
+    facet_category: str
+    conversation_observable: str
+    semantic_score: Optional[float] = None
+    keyword_score: Optional[float] = None
+    hybrid_score: float
+    matched_keywords: list[str] = Field(default_factory=list)
+    matched_categories: list[str] = Field(default_factory=list)
+    inclusion_reason: str = ""
+    exclusion_reason: str = ""
+    rank: int = 0
+
+    @model_validator(mode='after')
+    def validate_candidate_invariants(self) -> "RetrievalCandidate":
+        if self.rank > 0:
+            if self.conversation_observable != "true":
+                raise ValueError(f"Candidate {self.facet_id} ranked but not marked conversation_observable=true.")
+            if not self.inclusion_reason:
+                raise ValueError("Included candidate must have an inclusion_reason.")
+            if self.semantic_score is None and self.keyword_score is None:
+                raise ValueError("Included candidate must have at least one inclusion signal (semantic or keyword).")
+        
+        if self.rank == 0 and not self.exclusion_reason:
+            raise ValueError("Excluded candidate must have an exclusion_reason.")
+            
+        return self
+
+
+class RetrievalDiagnostics(BaseModel):
+    semantic_candidate_count: int = 0
+    keyword_candidate_count: int = 0
+    merged_candidate_count: int = 0
+    excluded_non_observable_count: int = 0
+    duplicate_candidate_count: int = 0
+    fallback_behavior: str = "none"
+
+
+class RetrievalResult(BaseModel):
+    conversation_id: str
+    candidate_count: int
+    candidates: list[RetrievalCandidate]
+    excluded_count: int
+    retrieval_config_metadata: Dict[str, Any] = Field(default_factory=dict)
+    index_version: str
+    warnings: list[str] = Field(default_factory=list)
+    diagnostics: Optional[RetrievalDiagnostics] = None
+
+    @model_validator(mode='after')
+    def validate_result_invariants(self) -> "RetrievalResult":
+        seen_ids = set()
+        for cand in self.candidates:
+            if cand.facet_id in seen_ids:
+                raise ValueError(f"Candidate list contains duplicate facet ID: {cand.facet_id}")
+            seen_ids.add(cand.facet_id)
+            
+            if cand.conversation_observable != "true":
+                raise ValueError(f"Candidate list contains non-observable facet: {cand.facet_id}")
+                
+            if cand.rank < 1:
+                raise ValueError(f"Candidate {cand.facet_id} is in the result but has rank < 1.")
+                
+        return self

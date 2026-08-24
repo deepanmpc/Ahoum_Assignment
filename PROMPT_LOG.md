@@ -98,3 +98,11 @@ model-observed corrections.
 - **Used:** Wrote a verification script simulating a dual-run state, comparing `data/processed/facet_catalogue.csv` outputs to guarantee byte-for-byte stability. Extracted summary statistics for the README update.
 - **Deliberately not implemented:** Did not implement Phase C retrieval, embeddings, or LLM scoring.
 - **Verification command:** Ran double-execution with `cmp` confirming deterministic hashing and generation outputs.
+
+## 2026-08-25 — Phase C1 Hybrid Retrieval Contracts (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Define clear, typed Pydantic contracts for Phase C's retrieval system (without implementing actual embeddings or vector databases). Ensure strict invariants to filter out non-observable facets from final candidate lists.
+- **Used:** Defined `ConversationInput`, `RetrievalCandidate`, `RetrievalDiagnostics`, and `RetrievalResult` in `src/ahoum_assignment/models.py`. Leveraged Pydantic's `@model_validator` to enforce inclusion/exclusion reasons, signal requirements, rank restrictions, and strict deduplication. Wrote `docs/retrieval_contracts.md` and `tests/test_retrieval_contracts.py`.
+- **Deliberately not implemented:** No vector databases, LLM calls, or actual embedding dependencies were installed or coded.
+- **Verification command:** `.venv/bin/python -m pytest tests/test_retrieval_contracts.py`
