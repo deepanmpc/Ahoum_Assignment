@@ -1,0 +1,76 @@
+# Keyword Routing Rules Configuration
+# Used to complement semantic retrieval by matching highly explicit phrasing.
+# Only facets marked 'conversation_observable=true' will ever be retrieved.
+
+[config]
+max_candidates_per_category = 5
+base_keyword_score = 0.5
+score_per_match = 0.1
+
+[categories.finance_risk]
+priority = 1
+weight = 0.9
+keywords = [
+    "budget", "budgeting", "savings", "debt", "investment risk", 
+    "gambling", "betting", "finances", "financial"
+]
+negative_keywords = ["not my money"]
+description = "Captures discussions about financial habits and risk."
+
+[categories.emotional_regulation]
+priority = 2
+weight = 0.85
+keywords = [
+    "waited calmly", "angry", "anxious", "frustrated", "overwhelmed", 
+    "calm", "patient", "upset", "patience", "anxiety", "morose",
+    "desperate"
+]
+negative_keywords = ["movie was angry", "character was anxious"]
+description = "Captures expressions of internal emotional states or reactions."
+
+[categories.values]
+priority = 3
+weight = 0.75
+keywords = [
+    "honest", "honesty", "humble", "humility", "leadership", 
+    "chivalry", "determination", "determined", "common sense"
+]
+negative_keywords = []
+
+[categories.social_interaction]
+priority = 4
+weight = 0.7
+keywords = [
+    "relationship", "friends", "aloof", "passive-aggressive", 
+    "disrespect", "hanging out", "social", "overprotective", "submissive"
+]
+negative_keywords = []
+
+[categories.communication]
+priority = 5
+weight = 0.8
+keywords = [
+    "talkative", "listening", "assertive", "hesitation", "articulate",
+    "stutter", "quiet"
+]
+negative_keywords = []
+
+# Multilingual / Code-switched examples (justified for high-priority global sentiments)
+[categories.communication.multilingual]
+keywords = [
+    "hablador" # Spanish for talkative
+]
+
+[categories.health_medical]
+priority = 10
+weight = 0.1
+keywords = ["blood pressure", "diagnosis", "disease"]
+negative_keywords = []
+description = "Even if matched, strict observability filters will block these facets."
+
+[categories.religion_culture]
+priority = 10
+weight = 0.1
+keywords = ["prayer", "church", "mosque", "temple"]
+negative_keywords = []
+description = "Strict observability filters will block these unless explicitly overridden."

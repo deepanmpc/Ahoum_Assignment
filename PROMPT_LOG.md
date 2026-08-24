@@ -122,3 +122,11 @@ model-observed corrections.
 - **Used:** Wrote `src/ahoum_assignment/semantic_retriever.py` to embed incoming text dynamically and rank indexed vectors, utilizing `lru_cache` to keep the embedding index and catalogue lazily loaded in memory. Implemented `scripts/retrieve_semantic.py` for direct CLI testing with `--text`, `--file`, and JSON output flags.
 - **Deliberately not implemented:** Did not send the raw conversation text to logs (unless explicitly requested by outputting the JSON manually), and strictly avoided LLM API calls.
 - **Verification command:** `.venv/bin/python scripts/retrieve_semantic.py --text "I am feeling very happy today" --top-k 3` and `.venv/bin/python -m pytest tests/test_semantic_retriever.py`
+
+## 2026-08-25 — Phase C4 Keyword and Category Routing (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Build a transparent, version-controlled keyword router to complement the semantic index. Map explicit phrases to categories, prevent false positives via boundary detection and negative keywords, score observable matches based on explicit configurable weights, and firmly exclude non-observable entries (like medical diagnoses) regardless of keyword overlap.
+- **Used:** Wrote `config/routing_rules.toml` containing weights, positive/negative keywords, and multi-lingual examples. Wrote `src/ahoum_assignment/keyword_router.py` to compile highly specific word-boundary regular expressions and compute transparent, capped scoring based on matches. Wrote tests validating false-positive prevention, case insensitivity, deterministic ordering, and the guaranteed exclusion of medical terms. Created `docs/keyword_routing_rules.md` documenting the architecture. 
+- **Deliberately not implemented:** Did not build a naive substring matcher (to avoid words inside other words). Avoided mapping ambiguous or weak keywords, deferring those strictly to the semantic engine.
+- **Verification command:** `.venv/bin/python -m pytest tests/test_keyword_router.py`

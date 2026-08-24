@@ -24,3 +24,10 @@
 - **Options considered:** Use a zero-shot LLM prompt to dynamically assign categories and observability; or build a transparent, rule-based keyword mapping system with deterministic outputs and an explicit override list.
 - **Choice:** Use a transparent, version-controlled rule engine based on regex keyword sets and an editable override CSV file.
 - **Trade-off:** Manual rules require upfront effort to curate and maintain, and leave many edge cases classified as "uncertain". However, this ensures that high-risk medical or religious facets are never accidentally classified as "conversationally observable" due to LLM stochasticity.
+
+## D4 — Transparent Keyword Routing Alongside Semantic Retrieval
+
+- **Problem:** Pure semantic retrieval (cosine similarity) often hallucinates conceptual proximity, linking conversational idioms to unrelated behavioral facets. 
+- **Options considered:** Rely solely on fine-tuning an embedding model, or build an independent, transparent rule-based keyword router to complement the semantic index.
+- **Choice:** Implement a transparent keyword/category router (`src/ahoum_assignment/keyword_router.py`) configured via a version-controlled TOML file (`config/routing_rules.toml`).
+- **Trade-off:** Maintaining regex-based keyword lists requires manual curation and doesn't scale perfectly to zero-shot linguistic nuance. However, it completely eliminates naive substring errors, supports explicit negative exclusions, and provides a deterministic bedrock for highly critical behavioral categories (like finance and emotional regulation) that must not be missed by fuzzy semantic models.
