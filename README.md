@@ -112,3 +112,13 @@ retrieval, scoring, and evaluation.
 - [DEBUGGING.md](DEBUGGING.md)
 - `data/processed/facet_catalogue.csv` (generated in Phase B)
 - benchmark conversations, reference labels, and generated results (later phases)
+
+## Phase D Prerequisites
+- Ensure the offline embedding index is rebuilt (`scripts/build_index.py`) if the catalogue or configuration changes.
+- The pipeline expects `scripts/retrieve_facets.py` to yield a strict, bounded JSON list of eligible facets ready for LLM batch scoring.
+
+## Known Limitations
+
+- **Taxonomy Stringency**: Many high-risk or external domains (like `finance_risk` or `health_medical`) are strictly restricted via deterministic observability rules. Perfectly clear text about budgeting will still not surface finance facets if they are universally marked `uncertain` in the catalogue.
+- **Rule Curation**: The keyword router requires manual curation of `routing_rules.toml` to capture domain-specific jargon effectively.
+- **Offline Index Size**: The semantic index currently loads fully into RAM. For a catalogue of < 10,000 facets, this is completely trivial, but may require a dedicated vector database if the catalogue scales to millions of traits.

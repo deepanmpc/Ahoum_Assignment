@@ -1,0 +1,27 @@
+[
+  {
+    "id": "conv-emotion",
+    "type": "emotional-regulation",
+    "text": "I waited calmly even though the line was incredibly long and everyone else was angry."
+  },
+  {
+    "id": "conv-work",
+    "type": "work-habit-communication",
+    "text": "I am naturally talkative and always try to lead the team meetings."
+  },
+  {
+    "id": "conv-finance",
+    "type": "money-risk",
+    "text": "I strictly budget my savings and avoid any serious investment risk or gambling."
+  },
+  {
+    "id": "conv-generic",
+    "type": "low-evidence",
+    "text": "Hey, what's up? Not much, just chilling today and looking at the sky."
+  },
+  {
+    "id": "conv-bait",
+    "type": "hallucination-bait",
+    "text": "My blood pressure is high because of my daily church prayer and disease diagnosis."
+  }
+]

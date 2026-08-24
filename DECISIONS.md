@@ -31,3 +31,9 @@
 - **Options considered:** Rely solely on fine-tuning an embedding model, or build an independent, transparent rule-based keyword router to complement the semantic index.
 - **Choice:** Implement a transparent keyword/category router (`src/ahoum_assignment/keyword_router.py`) configured via a version-controlled TOML file (`config/routing_rules.toml`).
 - **Trade-off:** Maintaining regex-based keyword lists requires manual curation and doesn't scale perfectly to zero-shot linguistic nuance. However, it completely eliminates naive substring errors, supports explicit negative exclusions, and provides a deterministic bedrock for highly critical behavioral categories (like finance and emotional regulation) that must not be missed by fuzzy semantic models.
+
+## D5 — Hybrid vs Single-Route Retrieval Trade-offs
+
+- **Problem:** Semantic models provide excellent conceptual recall but lack precise boundaries, leading to false-positive clustering on weak evidence. Pure keyword systems offer 100% precision for defined phrases but terrible recall for the countless ways humans express traits.
+- **Choice:** Implemented a unified `HybridRetriever` that merges both streams. 
+- **Trade-off:** Operating two distinct retrieval paths incurs a slight compute and memory overhead compared to a single vector database query. However, by strictly decoupling the keyword safety net from the fuzzy semantic engine, we gain deterministic explainability (`inclusion_reason` clearly separates whether a facet was found via a hard rule match or a vector similarity calculation). This allows the system to easily block medical hallucination bait (via keywords) while gently surfacing nuanced emotional traits (via vectors).

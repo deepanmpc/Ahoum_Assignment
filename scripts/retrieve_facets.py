@@ -19,7 +19,7 @@ def main():
     group.add_argument("--file", type=str, help="Text file input path")
     
     parser.add_argument("--top-k", type=int, default=20, help="Final candidates limit (default: 20)")
-    parser.add_argument("--hybrid-threshold", type=float, default=0.2, help="Minimum hybrid score threshold")
+    parser.add_argument("--hybrid-threshold", type=float, default=0.3, help="Minimum hybrid score threshold")
     parser.add_argument("--semantic-weight", type=float, default=0.6, help="Weight for semantic similarity")
     parser.add_argument("--keyword-weight", type=float, default=0.4, help="Weight for explicit keyword hits")
     parser.add_argument("--output", type=str, help="Optional JSON output path")
