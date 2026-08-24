@@ -74,3 +74,18 @@ def test_manual_override():
     assert res["facet_category"] == "values"
     assert res["conversation_observable"] == "true"
     assert res["review_required"] is False
+
+def test_regression_broad_medical_rules():
+    # 'subscription count' shouldn't be medical just because it has 'count'
+    res = classify_facet("subscription count", is_malf=False, overrides={})
+    assert res["facet_category"] == "unclear"
+    
+    # 'anatomy knowledge' might be unclear now, but certainly not high_risk medical 
+    # without explicit clinical context.
+    res = classify_facet("anatomy knowledge", is_malf=False, overrides={})
+    assert res["facet_type"] != "medical_or_diagnostic"
+
+def test_regression_broad_biography_rules():
+    # 'encouraging participation' shouldn't be biography just because of 'participation'
+    res = classify_facet("encouraging participation", is_malf=False, overrides={})
+    assert res["facet_category"] == "unclear"

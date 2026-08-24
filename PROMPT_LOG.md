@@ -82,3 +82,11 @@ model-observed corrections.
 - **Used:** Implemented template-based generation logic (`src/ahoum_assignment/anchor_rules.py`) relying on facet types. Added support for `anchor_overrides.csv`. Added test cases verifying anchor application logic and override priority. Collected quality report stats during generation and appended to `facet_audit.md`.
 - **Deliberately not implemented:** Did not manually edit the generated CSV output, relying fully on deterministic generation. Did not create fake scales for unobservable properties.
 - **Verification command:** `.venv/bin/python -m pytest tests/` and `.venv/bin/python scripts/preprocess_facets.py`
+
+## 2026-08-25 — Phase B Review and Correction (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Act as a skeptical reviewer for the Phase B catalogue generation. Sample generated rows to identify unsafe observables, weak anchors, broad taxonomy classifications, and unstable data.
+- **Used:** Sampled the catalogue and identified false-positive medical and biographical classifications (e.g., "Subscription count" marked as `health_medical` due to the keyword "count"). Corrected the regex rules in `taxonomy_rules.py` by removing generic keywords (`count`, `level`, `participation`, `pain`).
+- **Deliberately not implemented:** Did not manually edit generated CSV rows or use an LLM for remediation. All fixes were made to the deterministic rules.
+- **Verification command:** Reran `.venv/bin/python scripts/preprocess_facets.py`, verified with `.venv/bin/python -m pytest tests/` (which includes new regression tests), and documented the defect in `DEBUGGING.md`.

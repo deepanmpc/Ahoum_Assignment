@@ -20,15 +20,15 @@ TYPES = {
 # (category, type, observable, sensitivity, reason)
 RULES = [
     # Medical / Health (High Risk)
-    (r'\b(blood pressure|fsh|hba1c|wbc|cholesterol|level|count|diagnosis|disease|medical|pain|anatomy|symptom|clinical)\b', 
+    (r'\b(blood pressure|fsh|hba1c|wbc|cholesterol|diagnosis|disease|medical|clinical|biomarker|syndrome|pathology)\b', 
      "health_medical", "medical_or_diagnostic", "false", "high_risk", "Clinical biomarker or medical diagnosis requires objective medical evidence"),
      
     # Religious / Cultural (Sensitive)
-    (r'\b(sufi|quran|bahá’í|spiritual|religion|pilgrimage|church|prayer|ritual)\b',
+    (r'\b(sufi|quran|bahá’í|spiritual|religion|pilgrimage|church|prayer|ritual|gnostic|jewish|buddhist)\b',
      "religion_culture", "religious_or_cultural_practice", "false", "sensitive", "Religious or cultural practice requires external or self-reported history observation"),
      
     # Biography / External Facts
-    (r'\b(trips|participation|length|attendance|history|salary|income|demographic|age|cycles|retreat)\b',
+    (r'\b(trips|salary|income|demographic|age|cycles|retreat)\b',
      "biography_external", "external_biographical_fact", "false", "ordinary", "Requires external historical or biographical confirmation"),
      
     # Skills and Task Execution
