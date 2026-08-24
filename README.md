@@ -25,6 +25,24 @@ raw facet CSV -> enriched catalogue -> hybrid retrieval -> small LLM batches
 Only a small set of relevant, conversation-observable facets will be sent to
 the scorer. The system will never send all facets in one prompt.
 
+## Data Preprocessing & Catalogue Generation
+
+Run the deterministic preprocessing pipeline to normalize and classify the raw data:
+```bash
+python scripts/preprocess_facets.py
+```
+**Output Locations:**
+- Catalogue: `data/processed/facet_catalogue.csv`
+- Audit Report: `data/processed/facet_audit.md`
+
+**Catalogue Summary:**
+- Total raw entries processed: 399
+- Output enriched entries: 399 (Malformed entries are flagged and retained, never silently dropped)
+- Observability logic strictly filters external, medical, and sensitive traits from conversational scoring, keeping 31 conversational traits anchored securely and delegating edge cases to human review.
+
+**Known Limitations:**
+- The Phase B taxonomy relies on a strict, rule-based keyword matching system rather than LLM interpretation. While this guarantees safe default behavior (e.g., rejecting ambiguous facets as `uncertain`), it requires manual review and overrides via `data/raw/facet_overrides.csv` for advanced edge cases and highly domain-specific terms.
+
 ## Quick start
 
 Requires Python 3.11+.

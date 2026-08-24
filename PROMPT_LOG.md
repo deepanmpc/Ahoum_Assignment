@@ -90,3 +90,11 @@ model-observed corrections.
 - **Used:** Sampled the catalogue and identified false-positive medical and biographical classifications (e.g., "Subscription count" marked as `health_medical` due to the keyword "count"). Corrected the regex rules in `taxonomy_rules.py` by removing generic keywords (`count`, `level`, `participation`, `pain`).
 - **Deliberately not implemented:** Did not manually edit generated CSV rows or use an LLM for remediation. All fixes were made to the deterministic rules.
 - **Verification command:** Reran `.venv/bin/python scripts/preprocess_facets.py`, verified with `.venv/bin/python -m pytest tests/` (which includes new regression tests), and documented the defect in `DEBUGGING.md`.
+
+## 2026-08-25 — Phase B Handoff Review (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Verify Phase B pipeline reproducibility and stability. Ensure raw values are preserved, malformed rows retained, IDs stable, observability states correct, unobservables unanchored, and rules inspectable. Update documentation with summaries and limitations.
+- **Used:** Wrote a verification script simulating a dual-run state, comparing `data/processed/facet_catalogue.csv` outputs to guarantee byte-for-byte stability. Extracted summary statistics for the README update.
+- **Deliberately not implemented:** Did not implement Phase C retrieval, embeddings, or LLM scoring.
+- **Verification command:** Ran double-execution with `cmp` confirming deterministic hashing and generation outputs.
