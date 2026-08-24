@@ -130,3 +130,10 @@ model-observed corrections.
 - **Used:** Wrote `config/routing_rules.toml` containing weights, positive/negative keywords, and multi-lingual examples. Wrote `src/ahoum_assignment/keyword_router.py` to compile highly specific word-boundary regular expressions and compute transparent, capped scoring based on matches. Wrote tests validating false-positive prevention, case insensitivity, deterministic ordering, and the guaranteed exclusion of medical terms. Created `docs/keyword_routing_rules.md` documenting the architecture. 
 - **Deliberately not implemented:** Did not build a naive substring matcher (to avoid words inside other words). Avoided mapping ambiguous or weak keywords, deferring those strictly to the semantic engine.
 - **Verification command:** `.venv/bin/python -m pytest tests/test_keyword_router.py`
+
+## 2026-08-25 — Phase C5 Hybrid Facet Retrieval (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Implement hybrid retrieval merging semantic and keyword candidates. Apply configurable normalization weights, de-duplicate exact matched facets, enforce deterministic tie-breakers, and explicitly prevent the shortlist from returning arbitrary results when zero facets clear the threshold limits. Provide extensive JSON and human-readable output formats via a command-line script.
+- **Used:** Wrote `src/ahoum_assignment/hybrid_retriever.py` to union the outputs of `semantic_retriever` and `keyword_router`, deduplicating via `facet_id` and calculating the configurable `hybrid_score`. Handled robust diagnostics aggregations mapping exact overlap numbers and exclusion reasons. Created `scripts/retrieve_facets.py` handling `--human` and `--output` flags natively. Added tests validating weight impacts, tie-breaking, empty shortlists, and cross-route duplications.
+- **Verification command:** `.venv/bin/python scripts/retrieve_facets.py --text "I strictly budget my money." --human` and `.venv/bin/python -m pytest tests/test_hybrid_retriever.py`

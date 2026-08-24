@@ -42,6 +42,34 @@ Once the catalogue is generated, build the semantic search index:
 python scripts/build_index.py
 ```
 
+### Phase C: Hybrid Retrieval
+
+Run the unified hybrid retriever combining semantic vectors and keyword routing to produce a highly relevant shortlist of observable traits for scoring:
+```bash
+python scripts/retrieve_facets.py --text "I strictly budget my money." --human
+```
+
+The output conforms to the strictly typed `RetrievalResult` Pydantic model (JSON by default, or `--human` for debugging):
+```json
+{
+  "conversation_id": "uuid",
+  "candidate_count": 1,
+  "candidates": [
+    {
+      "facet_id": "...",
+      "hybrid_score": 0.82,
+      "inclusion_reason": "Retrieved via both paths...",
+      "...": "..."
+    }
+  ],
+  "diagnostics": {
+    "semantic_candidate_count": 1,
+    "keyword_candidate_count": 1,
+    "duplicate_candidate_count": 1
+  }
+}
+```
+
 **Catalogue Summary:**
 - Total raw entries processed: 399
 - Output enriched entries: 399 (Malformed entries are flagged and retained, never silently dropped)
