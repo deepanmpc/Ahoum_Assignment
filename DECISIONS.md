@@ -37,3 +37,15 @@
 - **Problem:** Semantic models provide excellent conceptual recall but lack precise boundaries, leading to false-positive clustering on weak evidence. Pure keyword systems offer 100% precision for defined phrases but terrible recall for the countless ways humans express traits.
 - **Choice:** Implemented a unified `HybridRetriever` that merges both streams. 
 - **Trade-off:** Operating two distinct retrieval paths incurs a slight compute and memory overhead compared to a single vector database query. However, by strictly decoupling the keyword safety net from the fuzzy semantic engine, we gain deterministic explainability (`inclusion_reason` clearly separates whether a facet was found via a hard rule match or a vector similarity calculation). This allows the system to easily block medical hallucination bait (via keywords) while gently surfacing nuanced emotional traits (via vectors).
+
+## D6 — Provider Abstraction and Batch-Size Trade-offs
+
+- **Provider Abstraction:** We implemented a `BaseProvider` protocol that cleanly separates local Ollama from cloud OpenAI-compatible endpoints (Groq, NVIDIA NIM, OpenRouter). Switching providers requires only changing environment variables — no pipeline logic changes. API keys are sourced exclusively from environment variables and are actively redacted from all error messages via `ProviderError`.
+- **Batch Size = 5:** We chose batches of 5 facets to balance prompt length (keeping it within small-model context windows) against call overhead. With 20–25 shortlisted candidates, this yields 4–5 provider calls per conversation — acceptable latency for a baseline system.
+- **Retry Policy:** One corrective retry per batch for validation failures (schema, facet-ID mismatches, evidence grounding). Provider-level errors (timeout, auth) are not retried to avoid compounding latency. Failed batches produce `error` status for affected facets without crashing the pipeline.
+
+## D7 — Structured Output Recovery vs Strict-Only Parsing
+
+- **Problem:** Small open-weight models frequently wrap JSON in markdown fences, prepend prose, or emit malformed brackets.
+- **Choice:** Implemented a three-stage JSON extractor (direct parse → fence extraction → brace extraction) followed by Pydantic schema validation, facet-ID cross-checking, and evidence-quote grounding. This maximises recovery without ever accepting invalid scores.
+- **Trade-off:** The multi-stage parser is more complex than a strict `json.loads()` call, but it dramatically reduces batch failure rates with small models while maintaining zero tolerance for fabricated evidence or wrong facet IDs.

@@ -144,3 +144,34 @@ model-observed corrections.
 - **Prompt summary:** Run a sanity check covering semantic, keyword, and hybrid retrieval across 5 varied development conversation queries. Ensure clear filtering of hallucination bait and non-observables, document findings, update limitations, and prepare the environment for the Phase D LLM scoring handoff.
 - **Used:** Wrote `scripts/run_demo.py` and `data/examples/dev_conversations.json` containing the 5 required checks (emotional regulation, work/communication, money/risk, low evidence, and hallucination bait). Aligned hybrid threshold configurations to uniformly default to `0.3` across scripts for test consistency. Appended known limitations to `README.md`, recorded the hybrid architecture decision to `DECISIONS.md`, and logged a genuine debugging insight into `DEBUGGING.md` detailing how the observability filter safely and silently blocked valid `finance_risk` keywords from progressing into the LLM shortlist.
 - **Verification command:** Ran `python scripts/run_demo.py` safely without an internet connection or external APIs using the offline FakeDeterministicEmbedder, confirming that the 20 hallucination bait facets were intercepted by the keyword router.
+
+## 2026-08-25 — Phase D1–D6 Batched LLM Scoring (Antigravity)
+
+### D1 — Provider Abstraction
+- **Created:** `src/ahoum_assignment/providers/base.py` (BaseProvider protocol, ProviderError with secret redaction, ProviderResponse dataclass), `providers/ollama.py` (local Ollama adapter), `providers/openai_compatible.py` (cloud adapter for Groq/NVIDIA/OpenRouter), `providers/factory.py` (config-based routing).
+- **Tests:** `tests/test_providers.py` — provider selection, missing-key errors, secret redaction, metadata capture.
+
+### D2 — Scoring Prompt and Response Contract
+- **Created:** `src/ahoum_assignment/scoring_prompt.py` containing the full evidence-grounded prompt template and `ScoringResponseItem`/`ScoringBatchResponse` Pydantic models.
+- **Tests:** `tests/test_scoring_prompt.py` — batch limits, anchor inclusion, inference prohibition, facet-ID retention, retry prompt construction.
+
+### D3 — Batch Orchestration
+- **Created:** `src/ahoum_assignment/batching.py` (deterministic split), `src/ahoum_assignment/scoring_service.py` (orchestration with provider calls, retry, dry-run).
+- **Created:** `scripts/score_conversation.py` CLI with --text, --file, --dry-run, --human, --output flags.
+- **Tests:** `tests/test_scoring_pipeline.py` — 1/5/6/20+ facet batching, dry-run zero calls, mock scoring, partial failure, deterministic ordering.
+
+### D4 — Response Parsing and Validation
+- **Created:** `src/ahoum_assignment/response_parser.py` (three-stage JSON extraction), `src/ahoum_assignment/response_validator.py` (schema + facet-ID + evidence grounding).
+- **Tests:** `tests/test_response_validation.py` — valid/fenced/prose JSON, malformed JSON, missing/duplicate/extra IDs, invalid scores, abstention-with-score, confidence range, invented evidence.
+
+### D5 — Result Aggregation
+- **Created:** `src/ahoum_assignment/result_aggregator.py` and `src/ahoum_assignment/result_renderer.py`.
+- **Tests:** All success/partial failure/all failure/mixed/stable ordering/no-score-for-abstention tests in `test_scoring_pipeline.py`.
+
+### D6 — Red-Team and Handoff
+- **Created:** `tests/test_redteam.py` with 8 red-team tests covering: medical bait, biographical bait, external-behavior bait, malformed-then-fixed provider, invented evidence rejection, batch crash isolation, abstention-only provider, dry-run, and prompt key safety.
+- **Verification:** `python -m pytest tests/` (116 tests, all pass). Full pipeline dry-run from preprocess through scoring verified.
+
+### Deliberately not implemented
+- No real LLM calls in tests. All provider interactions use mock classes.
+- No API keys stored anywhere in the repository.

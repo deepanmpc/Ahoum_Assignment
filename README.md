@@ -5,14 +5,11 @@ heterogeneous facet catalogue.
 
 ## Current status
 
-Phase A is complete: repository structure, stable result contracts, configuration, a no-network diagnostic command, and tests are in place.
+Phases A–D are complete: repository structure, contracts, configuration,
+preprocessing, hybrid retrieval, batched LLM scoring, structured output
+validation, and abstention-safe aggregation are all implemented and tested.
 
-Phase A does not yet implement:
-- preprocessing
-- embeddings
-- retrieval
-- LLM scoring
-- benchmark evaluation
+Phase E (benchmark evaluation) is not yet implemented.
 
 ## Architecture target
 
@@ -69,6 +66,20 @@ The output conforms to the strictly typed `RetrievalResult` Pydantic model (JSON
   }
 }
 ```
+
+### Phase D: LLM Scoring
+
+Score a conversation (dry-run builds prompts without calling a provider):
+```bash
+python scripts/score_conversation.py --text "I waited calmly." --dry-run --human
+```
+
+With a live Ollama provider:
+```bash
+python scripts/score_conversation.py --text "I waited calmly." --human
+```
+
+Output is written to stdout as JSON or `--human` readable text. Use `--output results.json` to save.
 
 **Catalogue Summary:**
 - Total raw entries processed: 399
