@@ -106,3 +106,11 @@ model-observed corrections.
 - **Used:** Defined `ConversationInput`, `RetrievalCandidate`, `RetrievalDiagnostics`, and `RetrievalResult` in `src/ahoum_assignment/models.py`. Leveraged Pydantic's `@model_validator` to enforce inclusion/exclusion reasons, signal requirements, rank restrictions, and strict deduplication. Wrote `docs/retrieval_contracts.md` and `tests/test_retrieval_contracts.py`.
 - **Deliberately not implemented:** No vector databases, LLM calls, or actual embedding dependencies were installed or coded.
 - **Verification command:** `.venv/bin/python -m pytest tests/test_retrieval_contracts.py`
+
+## 2026-08-25 — Phase C2 Offline Semantic Retrieval Index (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Implement the offline semantic retrieval index. Construct text documents strictly from observable facets, implement an embedding abstraction (without forcing heavy library downloads during tests), build L2-normalized embeddings into a numpy compressed file, and ensure index metadata tracks versions and hashes.
+- **Used:** Wrote `src/ahoum_assignment/embeddings.py` featuring an abstract `Embedder` protocol, a `SentenceTransformerEmbedder` for real execution, and a `FakeDeterministicEmbedder` (md5-based) for unit testing. Created `src/ahoum_assignment/semantic_index.py` to enforce strict eligibility filtering (omitting medical/unobservable items) and compute cosine-ready `npz` files alongside JSON metadata. Appended instructions to `README.md`.
+- **Deliberately not implemented:** Avoided heavyweight vector databases (e.g., Pinecone, Chroma) in favor of simple local numpy files. Did not hard-require PyTorch in unit tests; tests use the mock embedder ensuring they run fast offline.
+- **Verification command:** `.venv/bin/python -m pytest tests/test_semantic_index.py` and `.venv/bin/python scripts/build_index.py`

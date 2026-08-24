@@ -34,6 +34,13 @@ python scripts/preprocess_facets.py
 **Output Locations:**
 - Catalogue: `data/processed/facet_catalogue.csv`
 - Audit Report: `data/processed/facet_audit.md`
+- Semantic Vectors: `data/processed/facet_embeddings.npz`
+- Index Metadata: `data/processed/facet_index_metadata.json`
+
+Once the catalogue is generated, build the semantic search index:
+```bash
+python scripts/build_index.py
+```
 
 **Catalogue Summary:**
 - Total raw entries processed: 399
