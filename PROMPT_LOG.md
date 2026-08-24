@@ -114,3 +114,11 @@ model-observed corrections.
 - **Used:** Wrote `src/ahoum_assignment/embeddings.py` featuring an abstract `Embedder` protocol, a `SentenceTransformerEmbedder` for real execution, and a `FakeDeterministicEmbedder` (md5-based) for unit testing. Created `src/ahoum_assignment/semantic_index.py` to enforce strict eligibility filtering (omitting medical/unobservable items) and compute cosine-ready `npz` files alongside JSON metadata. Appended instructions to `README.md`.
 - **Deliberately not implemented:** Avoided heavyweight vector databases (e.g., Pinecone, Chroma) in favor of simple local numpy files. Did not hard-require PyTorch in unit tests; tests use the mock embedder ensuring they run fast offline.
 - **Verification command:** `.venv/bin/python -m pytest tests/test_semantic_index.py` and `.venv/bin/python scripts/build_index.py`
+
+## 2026-08-25 — Phase C3 Runtime Semantic Retrieval (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Implement runtime semantic retrieval taking a conversation text, calculating cosine similarity against the offline index, filtering by a configured threshold, and returning a strictly typed and ranked candidate list.
+- **Used:** Wrote `src/ahoum_assignment/semantic_retriever.py` to embed incoming text dynamically and rank indexed vectors, utilizing `lru_cache` to keep the embedding index and catalogue lazily loaded in memory. Implemented `scripts/retrieve_semantic.py` for direct CLI testing with `--text`, `--file`, and JSON output flags.
+- **Deliberately not implemented:** Did not send the raw conversation text to logs (unless explicitly requested by outputting the JSON manually), and strictly avoided LLM API calls.
+- **Verification command:** `.venv/bin/python scripts/retrieve_semantic.py --text "I am feeling very happy today" --top-k 3` and `.venv/bin/python -m pytest tests/test_semantic_retriever.py`
