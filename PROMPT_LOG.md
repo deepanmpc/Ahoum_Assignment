@@ -74,3 +74,11 @@ model-observed corrections.
 - **Used:** Python regex mapping rules (`src/ahoum_assignment/taxonomy_rules.py`) with support for an editable `facet_overrides.csv`. Added test cases for medical, biographical, and religious facets. Accumulated classification statistics and updated `facet_audit.md`.
 - **Deliberately not implemented:** Did not use an LLM for classification. Remaining facets that did not match strict rules were deterministically marked as "uncertain".
 - **Verification command:** `.venv/bin/python scripts/preprocess_facets.py` and `.venv/bin/python -m pytest tests/`
+
+## 2026-08-25 — Phase B4 Anchor and Scoring Definitions (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Extend preprocessing to generate deterministic scoring definitions and anchors (1, 3, 5) exclusively for `conversation_observable=true` facets, leaving non-observable items strictly unanchored with abstention reasons.
+- **Used:** Implemented template-based generation logic (`src/ahoum_assignment/anchor_rules.py`) relying on facet types. Added support for `anchor_overrides.csv`. Added test cases verifying anchor application logic and override priority. Collected quality report stats during generation and appended to `facet_audit.md`.
+- **Deliberately not implemented:** Did not manually edit the generated CSV output, relying fully on deterministic generation. Did not create fake scales for unobservable properties.
+- **Verification command:** `.venv/bin/python -m pytest tests/` and `.venv/bin/python scripts/preprocess_facets.py`

@@ -48,6 +48,16 @@ def main():
                 f.write(f"- {ex}\n")
             f.write("\n")
             
+        f.write("\n## Catalogue Quality & Anchor Report\n\n")
+        aa = stats["anchor_audit"]
+        f.write(f"- **Observable facets with full anchors:** {aa['observable_full_anchors']}\n")
+        f.write(f"- **Non-observable facets correctly left unanchored:** {aa['non_observable_unanchored']}\n")
+        f.write(f"- **Uncertain/Review-required entries:** {aa['uncertain_review']}\n\n")
+        
+        f.write("### Category Examples (Max 2 per Category)\n")
+        for cat, examples in aa['category_examples'].items():
+            f.write(f"- **{cat}**: {', '.join(examples)}\n")
+            
     print("Success: Generated deterministic facet catalogue and updated audit markdown.")
 
 

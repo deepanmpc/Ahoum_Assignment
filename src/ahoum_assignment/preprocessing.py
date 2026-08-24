@@ -43,6 +43,7 @@ def generate_id(raw_str: str, index: int) -> str:
 
 
 from ahoum_assignment.taxonomy_rules import classify_facet, load_overrides
+from ahoum_assignment.anchor_rules import apply_anchors, load_anchor_overrides
 from collections import Counter
 import json
 
@@ -62,6 +63,9 @@ def process_file(input_path: Path, output_path: Path) -> dict:
     overrides_file = input_path.parent / "facet_overrides.csv"
     overrides = load_overrides(overrides_file)
     
+    anchor_overrides_file = input_path.parent / "anchor_overrides.csv"
+    anchor_overrides = load_anchor_overrides(anchor_overrides_file)
+    
     records = []
     
     # Audit tracking
@@ -78,6 +82,12 @@ def process_file(input_path: Path, output_path: Path) -> dict:
             "conversational_trait": [],
             "unclear": [],
             "sensitive_or_high_risk": []
+        },
+        "anchor_audit": {
+            "observable_full_anchors": 0,
+            "non_observable_unanchored": 0,
+            "uncertain_review": 0,
+            "category_examples": {}
         }
     }
     
@@ -108,8 +118,9 @@ def process_file(input_path: Path, output_path: Path) -> dict:
             "anchor_5": "",
             "abstention_reason": classification["abstention_reason"],
             "review_required": classification["review_required"],
-            "preprocessing_version": "v1.1"
+            "preprocessing_version": "v1.2"
         }
+        record = apply_anchors(record, anchor_overrides)
         records.append(record)
         
         # Track stats
@@ -118,6 +129,23 @@ def process_file(input_path: Path, output_path: Path) -> dict:
         stats["observability"][record["conversation_observable"]] += 1
         stats["sensitivity"][record["sensitivity"]] += 1
         stats["review_required"][record["review_required"]] += 1
+        
+        # Anchor Audit Stats
+        is_obs = (record["conversation_observable"] == "true")
+        has_anchors = bool(record["anchor_1"] and record["anchor_5"])
+        if is_obs and has_anchors:
+            stats["anchor_audit"]["observable_full_anchors"] += 1
+        elif not is_obs and not has_anchors:
+            stats["anchor_audit"]["non_observable_unanchored"] += 1
+            
+        if record["review_required"] == "true":
+            stats["anchor_audit"]["uncertain_review"] += 1
+            
+        cat = record["facet_category"]
+        if cat not in stats["anchor_audit"]["category_examples"]:
+            stats["anchor_audit"]["category_examples"][cat] = []
+        if len(stats["anchor_audit"]["category_examples"][cat]) < 2:
+            stats["anchor_audit"]["category_examples"][cat].append(record["facet_normalized"])
         
         # Collect examples
         t = record["facet_type"]
