@@ -42,3 +42,11 @@ model-observed corrections.
 - **Used:** `.toml` config parsing using Python 3.11+ `tomllib`, dataclasses for schema `AppConfig`. Added `pytest` coverage for configuration overrides. 
 - **Deliberately not implemented:** No provider integrations, embeddings, retrieval logic, scoring, API requests, or API key parsing.
 - **Verification command:** `.venv/bin/python scripts/doctor.py doctor` and `.venv/bin/python -m pytest tests/test_config.py`
+
+## 2026-08-24 — Phase A4 Review & Handoff (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Independent review of Phase A. Audit repository against 8 risks (abstention vs neutral, accidental network calls, overwriting raw data, accidental commits, config reproducibility, honest README, environment setup, model config logic). Final verify of all deliverables.
+- **Used:** `git check-ignore`, `pytest`, `scripts/doctor.py`.
+- **What was changed:** Updated `DECISIONS.md` to truthfully reflect the choice of `pydantic` over standard library `dataclasses`.
+- **Verification:** All checklists passed cleanly.

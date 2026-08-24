@@ -1,16 +1,11 @@
 # Engineering decisions
 
-## D1 — Start with a dependency-free project core
+## D1 — Introduce Pydantic early for robust contract validation
 
-- **Problem:** The assignment needs reproducible setup, but early development
-  should not be blocked by model downloads or a provider account.
-- **Options considered:** Use a full dependency stack immediately; use only
-  standard-library contracts/configuration until model integration; or build
-  directly inside a notebook.
-- **Choice:** Use a `src/` Python package, TOML configuration, dataclasses, and
-  a no-network diagnostic command in Phase A.
-- **Trade-off:** Response parsing will gain a richer validation library later;
-  in return, the foundation and CI smoke tests remain lightweight and reliable.
+- **Problem:** The system requires strict adherence to result contracts (e.g. nullable scores on abstention, confidence boundaries) to prevent downstream evaluation errors.
+- **Options considered:** Use standard-library `dataclasses` and manual `__post_init__` checks, or adopt a validation library like `pydantic` early.
+- **Choice:** Adopt `pydantic` in Phase A to define `FacetRecord` and `FacetScore` with strict field and model validators.
+- **Trade-off:** Adds a third-party dependency early in the project before API integrations, but significantly increases trust in the data boundaries and prevents silent invalid states.
 
 ## D2 — Make abstention structurally different from a neutral score
 
