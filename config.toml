@@ -1,0 +1,24 @@
+[paths]
+raw_facets_csv = "data/raw/Facets Assignment.csv"
+facet_catalogue_csv = "data/processed/facet_catalogue.csv"
+embedding_index = "data/processed/facet_embeddings.npz"
+examples_dir = "data/examples"
+outputs_dir = "data/outputs"
+
+[model]
+# Phase A deliberately does not make model calls. The default is an open-weight,
+# <=4B Qwen model through Ollama; later phases add provider clients.
+provider = "ollama"
+name = "qwen2.5:3b-instruct"
+base_url = "http://localhost:11434"
+timeout_seconds = 45
+max_retries = 1
+
+[retrieval]
+top_k = 24
+semantic_weight = 0.70
+keyword_weight = 0.30
+
+[scoring]
+batch_size = 5
+minimum_confidence = 0.55
