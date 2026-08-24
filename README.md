@@ -34,6 +34,7 @@ python -m venv .venv
 source .venv/bin/activate
 python -m pip install -e '.[dev]'
 python scripts/doctor.py doctor
+python scripts/preprocess_facets.py
 python -m pytest
 ```
 

@@ -58,3 +58,11 @@ model-observed corrections.
 - **Used:** Python scripting to run heuristics on the raw CSV. Discovered 399 total valid lines with numbering prefixes, trailing colons, CamelCase anomalies, and domain-specific facets (e.g., "FSH level", "Pilgrimage participation count"). Drafted schema in `docs/facet_catalogue_schema.md`.
 - **Deliberately not implemented:** Did not manually label the 399 facets or generate the final `.csv`. The prompt strictly requested evidence and schema definitions only.
 - **Verification command:** Checked outputs in `data/processed/facet_audit.json`, `data/processed/facet_audit.md`, and `docs/facet_catalogue_schema.md`.
+
+## 2026-08-25 — Phase B2 Facet Preprocessing Pipeline (Antigravity)
+
+- **Tool/model:** Gemini 3.1 Pro (High)
+- **Prompt summary:** Implement deterministic, repeatable pipeline (`scripts/preprocess_facets.py`) to build `facet_catalogue.csv`. Perform normalization (whitespace, trailing colons, numbering prefixes) and malformed value detection without invoking LLMs.
+- **Used:** Python `csv` module, regex heuristics for normalization and string quality checks. Implemented MD5-based stable ID generation leveraging row index and raw values. Added tests covering all string mutation and preservation constraints.
+- **Deliberately not implemented:** No API calls or LLM usage for categorization. Placeholders were used for observable and classification labels.
+- **Verification command:** `.venv/bin/python -m pytest tests/test_preprocessing.py` and `.venv/bin/python scripts/preprocess_facets.py`
