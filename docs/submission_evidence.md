@@ -34,6 +34,8 @@ generated artifacts, tests, commands, and documentation.
 
 ## Repository State Audit
 
+> **📂 Note on Results Location**: All dynamic outputs (such as live evaluation reports, batch-scoring payloads, and diagnostic logs) are generated and saved strictly inside the `data/outputs/` folder in timestamped subdirectories. This folder is gitignored to prevent commit bloat, but evaluators can find all generated artifacts there immediately after running `scripts/evaluate.py`.
+
 | Check | Status |
 |---|---|
 | Raw input present and unchanged | ✅ `data/raw/Facets Assignment.csv` tracked, never modified |

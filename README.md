@@ -97,7 +97,15 @@ The enriched facet catalogue is a mandatory output generated dynamically from th
 - **Hallucination-Bait Verification**: [`docs/hallucination_bait_verification.md`](docs/hallucination_bait_verification.md)
 - **Submission Evidence Index**: [`docs/submission_evidence.md`](docs/submission_evidence.md)
 
-*(Note: Live output runs create dynamic timestamped directories in the gitignored `data/outputs/` directory containing large structured JSON run artifacts)*.
+### 📂 Where to find your Results
+**All dynamic output results are generated inside the `data/outputs/` folder.** 
+Whenever you run an evaluation or scoring script, the system automatically creates a timestamped directory (e.g., `data/outputs/run_20260825_143022_abc123/`). 
+Look inside this folder for your:
+- `evaluation_summary.json`
+- `evaluation_report.md`
+- Raw retrieval and scoring JSON payloads.
+
+*(Note: The `data/outputs/` folder is intentionally gitignored to keep the repository clean from dynamic run logs).*
 
 ## Model and Provider Configuration
 
