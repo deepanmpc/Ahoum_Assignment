@@ -55,10 +55,11 @@ def interactive_menu():
         print(" 5. Score Conversation (Batched LLM Scoring)")
         print(" 6. Run Full Test Suite")
         print(" 7. Run Full Pipeline Demo (run.sh)")
-        print(" 8. Exit")
+        print(" 8. Review Proposed Benchmark Labels")
+        print(" 9. Exit")
         print("="*55)
         
-        choice = input("Select an option [1-8]: ").strip()
+        choice = input("Select an option [1-9]: ").strip()
         
         if choice == "1":
             print("\n--- Running Doctor Check ---")
@@ -97,10 +98,13 @@ def interactive_menu():
             except subprocess.CalledProcessError:
                 pass
         elif choice == "8":
+            print("\n--- Reviewing Proposed Labels ---")
+            run_script("review_labels.py")
+        elif choice == "9":
             print("Exiting.")
             sys.exit(0)
         else:
-            print("Invalid choice. Please select a number from 1 to 8.")
+            print("Invalid choice. Please select a number from 1 to 9.")
             
         input("\nPress Enter to continue...")
 
