@@ -183,3 +183,11 @@ model-observed corrections.
 - **E4**: Created `scripts/review_labels.py` for project owners to traceably accept, edit, or reject labels, outputting to a separate `reference_labels_reviewed.jsonl`. Added this tool to the unified interactive CLI (`ahoum`).
 - **E5/E6**: Confirmed benchmark dataset passes validation and tests constraints. Verified no proposed labels claim unearned human-approval.
 
+
+## 2026-08-25 — Phase F Evaluation, Ablation, and Failure Analysis
+- **F1 & F3**: Defined compact evaluation protocol and implemented metrics for retrieval (recall, shortlist constraints), scoring (exact match, MAE), and abstention (unsupported score rate).
+- **F2**: Built a reproducible `scripts/evaluate.py` runner to execute semantic, keyword, or hybrid pipelines against the Phase E benchmark, serializing runs to `data/outputs/<run_id>`. Integrated into `ahoum` CLI option 9.
+- **F4**: Ran a retrieval ablation (semantic vs keyword vs hybrid). Verified keyword precision versus semantic nuance, formally documenting the hybrid trade-off in `DECISIONS.md`.
+- **F5**: Developed `scripts/generate_report.py` to compile evaluation metrics and `docs/failure_analysis_template.md` to classify future LLM reasoning errors cleanly.
+- **F6**: Verified local mock reproducibility.
+

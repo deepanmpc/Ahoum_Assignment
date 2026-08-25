@@ -3,14 +3,12 @@
 An abstention-aware baseline for evaluating conversation text against a large,
 heterogeneous facet catalogue.
 
-## Current status
-
-Phases A–E are complete: repository structure, contracts, configuration,
+Phases A–F are complete: repository structure, contracts, configuration,
 preprocessing, hybrid retrieval, batched LLM scoring, structured output
-validation, abstention-safe aggregation, and the human benchmark dataset are
-all implemented and tested.
+validation, abstention-safe aggregation, the human benchmark dataset, and 
+the formal evaluation/ablation runner are all implemented and tested.
 
-Phase F (benchmark evaluation) is not yet implemented.
+Phase G (Final Handoff) is not yet implemented.
 
 ## Architecture target
 
