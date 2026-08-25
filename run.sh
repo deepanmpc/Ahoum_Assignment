@@ -10,12 +10,13 @@ echo ""
 if [ ! -d ".venv" ]; then
     echo "[1/7] Creating virtual environment..."
     python3 -m venv .venv
+    source .venv/bin/activate
+    echo "Installing dependencies (this may take a moment)..."
+    pip install -q -e '.[dev]'
 else
-    echo "[1/7] Virtual environment exists."
+    echo "[1/7] Virtual environment exists. Skipping dependency installation."
+    source .venv/bin/activate
 fi
-
-source .venv/bin/activate
-pip install -q -e '.[dev]' 2>/dev/null
 
 # 2. Doctor check
 echo ""

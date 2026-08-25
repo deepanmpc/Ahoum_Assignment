@@ -13,11 +13,11 @@ authors = [{name = "Deepan"}]
 dependencies = [
     "pydantic>=2.0",
     "numpy>=1.24.0",
-    "sentence-transformers>=3.0.0"
 ]
 
 [project.optional-dependencies]
 dev = ["pytest>=8.0"]
+embeddings = ["sentence-transformers>=3.0.0"]
 
 [project.scripts]
 ahoum = "ahoum_assignment.cli:main"
