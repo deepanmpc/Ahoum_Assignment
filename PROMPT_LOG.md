@@ -241,3 +241,7 @@ instead of 0 errors. The fix is visible in the commit history for
 - **Prompt I4**: Release-candidate review as hiring evaluator.
 - **Action**: Performed a 10-point assessment of the entire project lifecycle against the original brief.
 - **Verification**: Documented in `docs/release_candidate_review.md`. Assessed all requirements as PASS, noting the minor `egg-info` correction made in I2.
+
+- **Final Release Prompt**: Assignment Audit, Fixes, Commit, and GitHub Submission.
+- **Action**: Performed a full repository audit matching every rubric checkpoint (A-F). Ensured all generated deliverables (`facet_catalogue.csv`, `hallucination_bait_verification.md`) were correctly executed and validated. Rewrote `README.md` into the final evaluator-facing structured format.
+- **Verification**: Verified tests and output generation commands. Pushed final commits to GitHub.
