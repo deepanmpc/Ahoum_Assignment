@@ -138,3 +138,10 @@ retrieval, scoring, and evaluation.
 - **Taxonomy Stringency**: Many high-risk or external domains (like `finance_risk` or `health_medical`) are strictly restricted via deterministic observability rules. Perfectly clear text about budgeting will still not surface finance facets if they are universally marked `uncertain` in the catalogue.
 - **Rule Curation**: The keyword router requires manual curation of `routing_rules.toml` to capture domain-specific jargon effectively.
 - **Offline Index Size**: The semantic index currently loads fully into RAM. For a catalogue of < 10,000 facets, this is completely trivial, but may require a dedicated vector database if the catalogue scales to millions of traits.
+
+## Evaluation Summary
+To run the evaluation suite locally and output to `data/outputs/`:
+```bash
+python scripts/evaluate.py --include-proposed --provider mock --retrieval-mode hybrid
+```
+See `docs/evaluation_protocol.md` and `docs/metric_definitions.md` for evaluation details.
