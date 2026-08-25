@@ -1,0 +1,4 @@
+facet_normalized,facet_category,facet_type,conversation_observable,observability_reason,sensitivity,abstention_reason,review_required
+meticulous and careful,work_habits,conversational_trait,true,Test,normal,,false
+speaks clearly,communication,conversational_trait,true,Test,normal,,false
+has asthma,health_medical,medical_or_diagnostic,false,Test,sensitive,Privacy,false
