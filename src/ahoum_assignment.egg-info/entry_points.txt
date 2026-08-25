@@ -1,2 +1,0 @@
-[console_scripts]
-ahoum = ahoum_assignment.cli:main

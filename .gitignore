@@ -48,3 +48,4 @@ data/outputs/*
 
 # Debug artifacts (may contain conversation data)
 debug_artifacts/
+*.egg-info/
