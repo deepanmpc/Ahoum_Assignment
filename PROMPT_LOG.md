@@ -233,3 +233,7 @@ instead of 0 errors. The fix is visible in the commit history for
 - **Action**: Grepped for leaked secrets, verified `.gitignore`, reviewed tracked outputs, and mapped all deliverables.
 - **Correction**: Noted that `src/ahoum_assignment.egg-info` was previously tracked and gets dirtied upon local install, but since `pip install -e .` makes safe metadata changes, I will simply commit the modified metadata (leaving it tracked rather than doing a destructive `git rm`). Added `docs/final_artifact_checklist.md`.
 - **Verification**: Git tree is completely clean and follows all Phase A-H instructions.
+
+- **Prompt I3**: Final safety and hallucination-abstention verification.
+- **Action**: Ran hybrid retrieval and evaluation over `conv-bench-10`, `11`, and `12` testing medical, biographical, and religious bait.
+- **Verification**: Produced `hallucination_bait_verification.md` and `.json` in the final output directory. Confirmed that the keyword router correctly identified 17 matches for the religious/financial bait but blocked them all structurally due to their non-observable classification.
