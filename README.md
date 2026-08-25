@@ -86,17 +86,18 @@ python -m pytest tests/ -v
 
 ## Generated Deliverables
 
-The enriched facet catalogue is a mandatory output generated dynamically from the provided raw CSV and preserves the raw facet value:
-- **Enriched Facet Catalogue**: `data/processed/facet_catalogue.csv`
-- **Facet Audit Report**: `data/processed/facet_audit.md`
-- **Semantic Index Metadata**: `data/processed/facet_index_metadata.json`
-- **Benchmark Conversations**: `data/examples/benchmark_conversations.jsonl`
-- **Representative Facets**: `data/examples/representative_facets.csv`
-- **Reference Labels**: `data/examples/reference_labels.jsonl`
-- **Hallucination-Bait Verification**: `data/outputs/final_verification/hallucination_bait_verification.md`
-- **Submission Evidence Index**: `docs/submission_evidence.md`
+The enriched facet catalogue is a mandatory output generated dynamically from the provided raw CSV. It preserves the raw facet value and is explicitly included in this repository:
+- **Enriched Facet Catalogue**: [`data/processed/facet_catalogue.csv`](data/processed/facet_catalogue.csv)
+- **Facet Audit Report**: [`data/processed/facet_audit.md`](data/processed/facet_audit.md)
+- **Semantic Index Metadata**: [`data/processed/facet_index_metadata.json`](data/processed/facet_index_metadata.json)
+- **Benchmark Conversations**: [`data/examples/benchmark_conversations.jsonl`](data/examples/benchmark_conversations.jsonl)
+- **Representative Facets**: [`data/examples/representative_facets.csv`](data/examples/representative_facets.csv)
+- **Reference Labels**: [`data/examples/reference_labels.jsonl`](data/examples/reference_labels.jsonl)
+- **Sample Mock Scoring Output**: [`data/examples/sample_structured_scoring_output.mock.json`](data/examples/sample_structured_scoring_output.mock.json)
+- **Hallucination-Bait Verification**: [`docs/hallucination_bait_verification.md`](docs/hallucination_bait_verification.md)
+- **Submission Evidence Index**: [`docs/submission_evidence.md`](docs/submission_evidence.md)
 
-*(Note: Live output runs create dynamic timestamped directories in `data/outputs/` containing `evaluation_summary.json` and `evaluation_report.md`)*.
+*(Note: Live output runs create dynamic timestamped directories in the gitignored `data/outputs/` directory containing large structured JSON run artifacts)*.
 
 ## Model and Provider Configuration
 

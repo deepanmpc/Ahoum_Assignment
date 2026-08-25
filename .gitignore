@@ -36,6 +36,10 @@ coverage.xml
 # Generated outputs
 data/processed/*
 !data/processed/.gitkeep
+!data/processed/facet_catalogue.csv
+!data/processed/facet_audit.md
+!data/processed/facet_audit.json
+!data/processed/facet_index_metadata.json
 data/outputs/*
 !data/outputs/.gitkeep
 

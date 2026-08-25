@@ -18,7 +18,7 @@ def main():
     print(f"Running preprocessing pipeline...\nInput:  {input_csv}\nOutput: {output_csv}")
     stats = process_file(input_csv, output_csv)
     
-    with open(audit_md, 'a', encoding='utf-8') as f:
+    with open(audit_md, 'w', encoding='utf-8') as f:
         f.write("\n## Taxonomy & Classification Audit\n\n")
         
         f.write("### Categories\n")

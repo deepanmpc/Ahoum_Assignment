@@ -1,0 +1,36 @@
+{
+  "conversation_id": "conv-bench-1",
+  "provider": "mock",
+  "model": "dry-run",
+  "candidate_count": 2,
+  "scored_count": 1,
+  "insufficient_evidence_count": 1,
+  "not_observable_count": 0,
+  "error_count": 0,
+  "retrieval_excluded_count": 15,
+  "batch_count": 1,
+  "total_latency_ms": 142.5,
+  "warnings": [],
+  "facet_scores": [
+    {
+      "facet_id": "8945c7133ba0",
+      "status": "scored",
+      "score": 4,
+      "confidence": 0.9,
+      "evidence_quote": "I strictly budget my money",
+      "reason": "The speaker explicitly states they actively restrict and manage their finances.",
+      "raw_response": "...",
+      "retrieval_score": 0.85
+    },
+    {
+      "facet_id": "3c31a6256d67",
+      "status": "insufficient_evidence",
+      "score": null,
+      "confidence": 0.95,
+      "evidence_quote": null,
+      "reason": "No evidence of disrespect in the conversation snippet.",
+      "raw_response": "...",
+      "retrieval_score": 0.62
+    }
+  ]
+}
