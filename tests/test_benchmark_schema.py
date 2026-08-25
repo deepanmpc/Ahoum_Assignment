@@ -84,3 +84,28 @@ def test_benchmark_conversations_file_valid():
         assert len(c.text) > 0
         assert isinstance(c.risk_tags, list)
         assert isinstance(c.expected_retrieval_categories, list)
+
+def test_representative_facets_and_labels():
+    rep_csv = Path("data/examples/representative_facets.csv")
+    assert rep_csv.exists()
+    
+    with open(rep_csv, "r", encoding="utf-8") as f:
+        lines = f.readlines()
+        assert len(lines) >= 21  # 1 header + at least 20 facets
+        
+    labels_jsonl = Path("data/examples/reference_labels.jsonl")
+    assert labels_jsonl.exists()
+    
+    with open(labels_jsonl, "r", encoding="utf-8") as f:
+        labels = [ReferenceLabel.model_validate_json(line) for line in f]
+        
+    for label in labels:
+        assert label.reviewer_status == "proposed"
+        assert label.reviewer_name_or_alias is None
+        
+        if label.expected_status == "scored":
+            assert label.expected_score_1_to_5 is not None
+            assert label.expected_evidence_quote is not None
+        else:
+            assert label.expected_score_1_to_5 is None
+            
