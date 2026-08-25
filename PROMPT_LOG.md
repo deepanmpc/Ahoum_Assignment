@@ -237,3 +237,7 @@ instead of 0 errors. The fix is visible in the commit history for
 - **Prompt I3**: Final safety and hallucination-abstention verification.
 - **Action**: Ran hybrid retrieval and evaluation over `conv-bench-10`, `11`, and `12` testing medical, biographical, and religious bait.
 - **Verification**: Produced `hallucination_bait_verification.md` and `.json` in the final output directory. Confirmed that the keyword router correctly identified 17 matches for the religious/financial bait but blocked them all structurally due to their non-observable classification.
+
+- **Prompt I4**: Release-candidate review as hiring evaluator.
+- **Action**: Performed a 10-point assessment of the entire project lifecycle against the original brief.
+- **Verification**: Documented in `docs/release_candidate_review.md`. Assessed all requirements as PASS, noting the minor `egg-info` correction made in I2.
