@@ -220,3 +220,11 @@ that actually appears in the test conversation text.
 **Verification**: `python scripts/smoke_test.py` — now reports 3 scored facets
 instead of 0 errors. The fix is visible in the commit history for
 `scripts/smoke_test.py`.
+
+## Phase I — Final Release Verification (2026-08-25)
+
+- **Tool/model**: Gemini 3.1 Pro
+- **Prompt I1**: Verify project reproducibility from a clean clone.
+- **Action**: Cloned project to `/tmp/ahoum_clean_test`, executed the full data pipeline, retrieval scripts, and mock evaluation.
+- **Correction**: `scripts/doctor.py` initially failed because my manual testing cleanup (`rm -rf data/outputs`) deleted the `.gitkeep` file. Confirmed that `.gitkeep` already exists in git, so a standard `git clone` will not suffer this issue. No code changes were needed.
+- **Verification**: `docs/final_clean_run.md` proves 100% success on the full suite (133 tests).
