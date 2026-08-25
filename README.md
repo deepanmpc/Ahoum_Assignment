@@ -5,11 +5,12 @@ heterogeneous facet catalogue.
 
 ## Current status
 
-Phases A–D are complete: repository structure, contracts, configuration,
+Phases A–E are complete: repository structure, contracts, configuration,
 preprocessing, hybrid retrieval, batched LLM scoring, structured output
-validation, and abstention-safe aggregation are all implemented and tested.
+validation, abstention-safe aggregation, and the human benchmark dataset are
+all implemented and tested.
 
-Phase E (benchmark evaluation) is not yet implemented.
+Phase F (benchmark evaluation) is not yet implemented.
 
 ## Architecture target
 
@@ -96,13 +97,17 @@ Requires Python 3.11+.
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e '.[dev]'
-python scripts/doctor.py doctor
-python scripts/preprocess_facets.py
-python -m pytest
+pip install -q -e '.[dev]'
 ```
 
-`doctor` validates local configuration only. It does not contact Ollama,
+**Interactive CLI:**
+All commands are accessible via a unified interactive menu:
+```bash
+ahoum
+```
+This includes preprocessing, retrieval, scoring, testing, and reviewing benchmark labels.
+
+`ahoum doctor` validates local configuration only. It does not contact Ollama,
 Groq, NVIDIA NIM, OpenRouter, or any other model provider.
 
 ## Configuration and secrets

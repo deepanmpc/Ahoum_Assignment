@@ -175,3 +175,11 @@ model-observed corrections.
 ### Deliberately not implemented
 - No real LLM calls in tests. All provider interactions use mock classes.
 - No API keys stored anywhere in the repository.
+
+## 2026-08-25 — Phase E Benchmark Conversations and Human Reference Set
+- **E1**: Designed benchmark schemas (`BenchmarkConversation`, `ReferenceLabel`) and documented annotation guidelines in `docs/benchmark_annotation_guide.md`.
+- **E2**: Authored 12 short conversational snippets explicitly testing distinct safety and retrieval challenges, such as ambiguous wording, quoted speech, sarcasm, code-switching, financial decisions, and hallucination bait.
+- **E3**: Extracted 25 representative facets across diverse observational dimensions. Manually authored sparse, proposed reference labels (8 labels) mapping scenarios directly to abstention or exact evidence text.
+- **E4**: Created `scripts/review_labels.py` for project owners to traceably accept, edit, or reject labels, outputting to a separate `reference_labels_reviewed.jsonl`. Added this tool to the unified interactive CLI (`ahoum`).
+- **E5/E6**: Confirmed benchmark dataset passes validation and tests constraints. Verified no proposed labels claim unearned human-approval.
+
