@@ -191,3 +191,12 @@ model-observed corrections.
 - **F5**: Developed `scripts/generate_report.py` to compile evaluation metrics and `docs/failure_analysis_template.md` to classify future LLM reasoning errors cleanly.
 - **F6**: Verified local mock reproducibility.
 
+
+## 2026-08-25 — Phase G Reliability, Debugging Evidence, and Release Hardening
+- **G1**: Built `scripts/smoke_test.py` with `SmokeMockProvider` to enforce deterministic, local-only end-to-end testing from raw CSV to aggregated result without hitting the network.
+- **G2**: Hardened `src/ahoum_assignment/config.py` by adding explicit ValueError checks for `batch_size`, `top_k`, and weight constraints, failing fast before expensive downstream execution. Added unit tests for configuration bounds.
+- **G3**: Wrote `tests/integration/test_fault_injection.py` with `FaultyMockProvider`. Validated that `ProviderError` (e.g. timeout) gracefully fails the targeted batch immediately, while `ValidationError` (e.g. malformed JSON) triggers exactly one corrective retry before permanent failure. Surviving batches successfully complete the aggregation pipeline.
+- **G4**: Integrated privacy-safe logging via `src/ahoum_assignment/logging_utils.py`. The pipeline now defaults to omitting PII/Secrets, with a `--debug` argument (available via the python API) to dump raw LLM exchanges into a git-ignored `debug_artifacts/` directory for safe local debugging. Added regex-based redaction for bearer tokens and JSON API keys.
+- **G5**: Documented two genuine debugging cases (Pydantic `RetrievalCandidate` validation strictness for default ranks, and JSON `api_key` quotes missing from the redaction regex) within `DEBUGGING.md`, complete with regression tests.
+- **G6**: Performed a clean-run release rehearsal successfully asserting all 133 tests passed, documented in `docs/release_rehearsal.md`.
+
