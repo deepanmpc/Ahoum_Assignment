@@ -56,10 +56,11 @@ def interactive_menu():
         print(" 6. Run Full Test Suite")
         print(" 7. Run Full Pipeline Demo (run.sh)")
         print(" 8. Review Proposed Benchmark Labels")
-        print(" 9. Exit")
+        print(" 9. Run Benchmark Evaluation")
+        print(" 10. Exit")
         print("="*55)
         
-        choice = input("Select an option [1-9]: ").strip()
+        choice = input("Select an option [1-10]: ").strip()
         
         if choice == "1":
             print("\n--- Running Doctor Check ---")
@@ -101,10 +102,21 @@ def interactive_menu():
             print("\n--- Reviewing Proposed Labels ---")
             run_script("review_labels.py")
         elif choice == "9":
+            print("\n--- Running Benchmark Evaluation ---")
+            provider = input("Use live provider or mock provider? [live/MOCK]: ").strip().lower() or "mock"
+            p_arg = "configured" if provider == "live" else "mock"
+            include_prop = input("Include proposed (unreviewed) labels? (Development only) [y/N]: ").strip().lower() == "y"
+            
+            args = ["--provider", p_arg]
+            if include_prop:
+                args.append("--include-proposed")
+                
+            run_script("evaluate.py", args)
+        elif choice == "10":
             print("Exiting.")
             sys.exit(0)
         else:
-            print("Invalid choice. Please select a number from 1 to 9.")
+            print("Invalid choice. Please select a number from 1 to 10.")
             
         input("\nPress Enter to continue...")
 
