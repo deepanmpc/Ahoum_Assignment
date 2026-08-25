@@ -45,3 +45,6 @@ data/outputs/*
 *.swp
 *.swo
 .DS_Store
+
+# Debug artifacts (may contain conversation data)
+debug_artifacts/

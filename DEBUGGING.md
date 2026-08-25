@@ -1,23 +1,103 @@
 # Debugging Log
 
-This document records genuine defects, failed assumptions, and boundary conditions discovered and fixed during the hardening phase (Phase G).
+This document records genuine defects, failed assumptions, and boundary
+conditions discovered during implementation and hardening. Each entry includes
+a reproducible symptom, root cause, fix, and verification.
+
+---
 
 ## 1. Pydantic Validator Strictness on Excluded Candidates
+
+**Phase**: G (Reliability Hardening)
 **Date**: 2026-08-25
-**Symptom**: Integration tests (`test_fault_injection.py`) failed with `pydantic_core._pydantic_core.ValidationError: 1 validation error for RetrievalCandidate... Value error, Excluded candidate must have an exclusion_reason.`
-**Reproduction steps**: Instantiate a `RetrievalCandidate` with valid inclusion fields but omit `rank` (which defaults to 0) and `exclusion_reason`.
-**Diagnosis**: The `RetrievalCandidate` model uses a strict `@model_validator(mode='after')` that asserts: if `rank == 0` (meaning it was excluded from the top-K), an `exclusion_reason` must be explicitly provided. During testing, I provided a dummy candidate intending it to be an included candidate, but because I did not explicitly set `rank=1`, it defaulted to 0 and crashed.
-**Root cause**: The model validator is strictly enforcing the domain invariant that any unranked facet must have a recorded reason for exclusion.
-**Fix**: Updated the test fixture in `test_fault_injection.py` to explicitly set `rank=1` and `exclusion_reason=""` when mocking an included candidate, satisfying the Pydantic validator.
-**Regression test added**: `tests/integration/test_fault_injection.py` relies on `get_dummy_retrieval` which now properly constructs the Pydantic models.
-**Verification command and result**: `pytest tests/integration/test_fault_injection.py` now passes without Pydantic initialization errors.
+
+**Symptom**: Integration tests (`test_fault_injection.py`) failed with:
+```
+pydantic_core.ValidationError: 1 validation error for RetrievalCandidate
+  Value error, Excluded candidate must have an exclusion_reason.
+```
+
+**Reproduction steps**:
+```python
+from ahoum_assignment.models import RetrievalCandidate
+# This crashes — rank defaults to 0, triggering the exclusion invariant
+RetrievalCandidate(
+    facet_id="f1", facet_raw="f1", facet_normalized="f1",
+    facet_category="cat", conversation_observable="true",
+    semantic_score=1.0, keyword_score=1.0, hybrid_score=1.0,
+    inclusion_reason="test"
+)
+```
+
+**Diagnosis**: The `@model_validator` on `RetrievalCandidate` enforces: if
+`rank == 0` (default), the candidate is treated as excluded and must have an
+`exclusion_reason`. But the test intended this as an included candidate and
+did not set `rank=1`.
+
+**Root cause**: The Pydantic model's default `rank=0` silently triggers the
+exclusion branch of the validator. Any test creating an "included" candidate
+must explicitly set `rank >= 1`.
+
+**Fix**: Updated `test_fault_injection.py:get_dummy_retrieval` to set
+`rank=1` and `exclusion_reason=""` when mocking included candidates.
+
+**Regression test**: `tests/integration/test_fault_injection.py` — all three
+fault-injection tests now construct candidates correctly.
+
+**Verification**:
+```bash
+python -m pytest tests/integration/test_fault_injection.py -v
+# Result: 3 passed
+```
+
+**Remaining limitation**: Any new test creating `RetrievalCandidate` instances
+must remember to set `rank >= 1` for included candidates. This is by design —
+the validator exists to prevent accidental unranked candidates from reaching
+the scorer.
+
+---
 
 ## 2. API Key Regex Redaction Failed on Quoted JSON Keys
+
+**Phase**: G (Reliability Hardening)
 **Date**: 2026-08-25
-**Symptom**: `test_redact_secrets` failed the assertion `assert "sk-12345" not in safe_text_3` for a dummy JSON string containing an API key.
-**Reproduction steps**: Run `redact_secrets('{"api_key": "sk-1234567890abcdef"}')`.
-**Diagnosis**: The string returned was exactly the input string. The regex `r'(?i)(api_key[\s=:]+)[A-Za-z0-9\-\._~+/]+=*'` was attempting to match the `api_key` literal followed by space, equals, or colon. However, in standard JSON, the key is enclosed in double quotes: `"api_key": "..."`. The regex did not allow for a quote character `"` between the key and the colon.
-**Root cause**: The redaction regex `[\s=:]+` was too restrictive and failed to match JSON-formatted string literals.
-**Fix**: Modified the regex in `src/ahoum_assignment/logging_utils.py` to include double quotes in the separator character class: `[\s=:"]+`.
-**Regression test added**: `tests/test_logging.py::test_redact_secrets` contains the exact JSON string format that originally failed.
-**Verification command and result**: `pytest tests/test_logging.py` now successfully asserts that the JSON string is redacted to `{"api_key": "[REDACTED]"}`.
+
+**Symptom**: `test_redact_secrets` failed:
+```
+assert "sk-12345" not in safe_text_3
+AssertionError: 'sk-12345' is contained here:
+  {"api_key": "sk-1234567890abcdef"}
+```
+
+**Reproduction steps**:
+```python
+from ahoum_assignment.logging_utils import redact_secrets
+result = redact_secrets('{"api_key": "sk-1234567890abcdef"}')
+# Expected: {"api_key": "[REDACTED]"}
+# Actual:   {"api_key": "sk-1234567890abcdef"}  (unchanged)
+```
+
+**Diagnosis**: The regex pattern `r'(?i)(api_key[\s=:]+)...'` expected the
+separator between key and value to be whitespace, `=`, or `:`. In JSON, the
+actual separator is `": "` (colon + space + quote). The quote character `"`
+was not in the character class, so the regex did not match.
+
+**Root cause**: The separator character class `[\s=:]+` was too restrictive
+for JSON syntax where values are enclosed in double quotes.
+
+**Fix**: Changed the regex to `[\s=:"]+` in `src/ahoum_assignment/logging_utils.py`,
+allowing the quote character in the separator.
+
+**Regression test**: `tests/test_logging.py::test_redact_secrets` — contains
+the exact JSON string that originally failed.
+
+**Verification**:
+```bash
+python -m pytest tests/test_logging.py -v
+# Result: 2 passed
+```
+
+**Remaining limitation**: The regex is intentionally simple. It handles
+`api_key` in JSON, TOML, and environment-variable formats but will not catch
+arbitrarily named secret fields (e.g., `"secret_token": "..."`). Adding more
+patterns is straightforward but risks false-positive redaction.
