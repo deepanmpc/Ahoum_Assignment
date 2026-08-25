@@ -16,6 +16,7 @@ from ahoum_assignment.scoring_prompt import (
     build_retry_prompt,
 )
 from ahoum_assignment.response_validator import validate_batch_response
+from ahoum_assignment.logging_utils import write_debug_artifact, setup_logger
 
 
 @dataclass
@@ -31,7 +32,7 @@ class BatchOutcome:
     model_name: str = ""
     latency_ms: float = 0.0
     attempts: int = 0
-    raw_response_text: str = ""  # stored separately for debug only
+    raw_response_text: str = ""
 
 
 @dataclass
@@ -72,11 +73,20 @@ def score_conversation(
     catalogue_path: Path,
     batch_size: int = 5,
     dry_run: bool = False,
+    debug_mode: bool = False,
 ) -> ScoringResult:
     """Run the full scoring pipeline for one conversation.
 
     If *dry_run* is True, prompts are built but no provider call is made.
     """
+    logger = setup_logger("ahoum.scoring", debug_mode=debug_mode)
+
+    if debug_mode:
+        logger.warning("Debug mode enabled. Raw prompts and responses will be saved to debug_artifacts/")
+        logger.warning("WARNING: debug_artifacts/ may contain conversation data.")
+
+    logger.info(f"Scoring conversation {conversation_id} (Length: {len(conversation_text)} chars)")
+
     # Assert all candidates are observable
     for c in retrieval_result.candidates:
         if c.conversation_observable != "true":
@@ -87,6 +97,8 @@ def score_conversation(
     catalogue_rows = load_catalogue_rows(catalogue_path)
     batches = split_batches(retrieval_result.candidates, batch_size)
 
+    logger.info(f"Split {len(retrieval_result.candidates)} candidates into {len(batches)} batches.")
+
     outcomes: List[BatchOutcome] = []
 
     for idx, batch in enumerate(batches):
@@ -96,9 +108,13 @@ def score_conversation(
             facet_ids=facet_ids,
         )
 
+        logger.info(f"Processing Batch {idx+1}/{len(batches)} with {len(batch)} facets")
         prompt = build_batch_prompt(
             conversation_text, batch, catalogue_rows=catalogue_rows
         )
+
+        if debug_mode:
+            write_debug_artifact(conversation_id, f"batch_{idx}_prompt.txt", prompt)
 
         if dry_run:
             outcome.success = True
@@ -122,6 +138,7 @@ def score_conversation(
             outcome.model_name = provider.model_name
             outcome.attempts = 1
             outcomes.append(outcome)
+            logger.error(f"Batch {idx} failed on attempt 1: {exc.safe_message}")
             continue
 
         outcome.provider_name = resp.provider_name
@@ -129,6 +146,9 @@ def score_conversation(
         outcome.latency_ms = resp.latency_ms
         outcome.raw_response_text = resp.text
         outcome.attempts = 1
+
+        if debug_mode:
+            write_debug_artifact(conversation_id, f"batch_{idx}_response_1.json", resp.text)
 
         validation = validate_batch_response(
             resp.text, facet_ids, conversation_text
@@ -138,10 +158,16 @@ def score_conversation(
             outcome.success = True
             outcome.items = validation.items
             outcomes.append(outcome)
+            logger.debug(f"Batch {idx} succeeded on attempt 1")
             continue
 
         # --- Corrective Retry (once) ---
+        logger.warning(f"Batch {idx} validation failed. Retrying... Errors: {validation.errors}")
         retry_prompt = build_retry_prompt(prompt, validation.errors)
+
+        if debug_mode:
+            write_debug_artifact(conversation_id, f"batch_{idx}_retry_prompt.txt", retry_prompt)
+
         try:
             resp2 = provider.generate(retry_prompt)
         except ProviderError as exc:
@@ -151,11 +177,15 @@ def score_conversation(
             ]
             outcome.attempts = 2
             outcomes.append(outcome)
+            logger.error(f"Batch {idx} failed on attempt 2: {exc.safe_message}")
             continue
 
         outcome.latency_ms += resp2.latency_ms
         outcome.raw_response_text = resp2.text
         outcome.attempts = 2
+
+        if debug_mode:
+            write_debug_artifact(conversation_id, f"batch_{idx}_response_2.json", resp2.text)
 
         validation2 = validate_batch_response(
             resp2.text, facet_ids, conversation_text
@@ -164,9 +194,11 @@ def score_conversation(
         if validation2.success:
             outcome.success = True
             outcome.items = validation2.items
+            logger.debug(f"Batch {idx} succeeded on attempt 2")
         else:
             outcome.success = False
             outcome.errors = validation2.errors
+            logger.error(f"Batch {idx} failed on attempt 2. Permanent failure.")
 
         outcomes.append(outcome)
 
